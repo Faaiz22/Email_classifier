@@ -37,7 +37,7 @@ spam,"Free money! Click here now!"
 - `label`: Contains 'spam' or 'ham' classifications
 - `message`: Contains the email text content
 
-## 🛠️ Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 
@@ -261,7 +261,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🚀 Quick Start Commands
+##  Quick Start Commands
 
 ```bash
 # Clone and setup
