@@ -1,27 +1,27 @@
-# 🚫 Spam Email Classifier
+#  Spam Email Classifier
 
 A comprehensive machine learning web application for classifying emails as spam or ham (legitimate) using advanced text processing and multiple classification algorithms.
 
-## 🎯 Project Overview
+##  Project Overview
 
 This project implements a binary classification system that distinguishes between spam and ham emails using machine learning techniques including Logistic Regression and Naive Bayes. The application handles imbalanced datasets effectively and provides a user-friendly interface for real-time email classification.
 
-## ✨ Features
+##  Features
 
-- **🤖 Multiple ML Models**: Logistic Regression & Naive Bayes with performance comparison
-- **🔄 Advanced Text Preprocessing**: URL removal, email cleaning, stemming, stopword removal
-- **⚖️ Class Imbalance Handling**: Balanced class weights for better performance on imbalanced data
-- **📊 Comprehensive Metrics**: Accuracy, Precision, Recall, F1-Score with visualizations
-- **🎨 Interactive UI**: Modern Streamlit interface with real-time classification
-- **📈 Performance Analysis**: Confusion matrices and detailed classification reports
-- **🔍 Real-time Classification**: Test your own text with instant predictions
+- **Multiple ML Models**: Logistic Regression & Naive Bayes with performance comparison
+- **Advanced Text Preprocessing**: URL removal, email cleaning, stemming, stopword removal
+- **Class Imbalance Handling**: Balanced class weights for better performance on imbalanced data
+- **Comprehensive Metrics**: Accuracy, Precision, Recall, F1-Score with visualizations
+- **Interactive UI**: Modern Streamlit interface with real-time classification
+- **Performance Analysis**: Confusion matrices and detailed classification reports
+- **Real-time Classification**: Test your own text with instant predictions
 
-## 🚀 Live Demo
+##  Live Demo
 
 - **Streamlit App**: [Your Streamlit Cloud URL here]
 - **GitHub Repository**: [Your GitHub Repository URL here]
 
-## 📋 Dataset Requirements
+##  Dataset Requirements
 
 The application expects a CSV file with the following format:
 
@@ -86,7 +86,7 @@ wordcloud==1.9.2
 plotly==5.15.0
 ```
 
-## 🌐 Deployment on Streamlit Cloud
+##  Deployment on Streamlit Cloud
 
 ### Step 1: Prepare Your Repository
 
@@ -120,7 +120,7 @@ If deployment fails:
 - Verify all import statements work correctly
 - Check Streamlit Cloud logs for specific error messages
 
-## 📖 How to Use
+##  How to Use
 
 ### 1. Upload & Train Models
 - Navigate to the "Upload & Train" section
@@ -141,7 +141,7 @@ If deployment fails:
 - View confusion matrices
 - Examine detailed classification reports
 
-## 🔧 Technical Architecture
+##  Technical Architecture
 
 ### Data Preprocessing Pipeline
 
@@ -182,7 +182,7 @@ If deployment fails:
 - **F1-Score**: Harmonic mean of precision and recall
 - **Confusion Matrix**: Detailed prediction breakdown
 
-## 📊 Model Performance
+##  Model Performance
 
 The application implements several techniques to handle imbalanced datasets:
 
@@ -191,7 +191,7 @@ The application implements several techniques to handle imbalanced datasets:
 - **Multiple Metrics**: Focus on precision, recall, and F1-score over accuracy
 - **Visual Analysis**: Confusion matrices and probability distributions
 
-## 🎨 User Interface Features
+##  User Interface Features
 
 - **Modern Design**: Clean, professional interface
 - **Interactive Elements**: Real-time predictions and visualizations
@@ -199,7 +199,7 @@ The application implements several techniques to handle imbalanced datasets:
 - **Progress Indicators**: Clear feedback during model training
 - **Error Handling**: Graceful error messages and validation
 
-## 🔍 Code Structure
+##  Code Structure
 
 ```
 spam-email-classifier/
@@ -217,7 +217,7 @@ spam-email-classifier/
 - `calculate_metrics()`: Performance evaluation
 - Page functions: `home_page()`, `upload_and_train_page()`, etc.
 
-## 🚀 Advanced Features
+##  Advanced Features
 
 ### Model Comparison
 - Side-by-side performance comparison
@@ -234,7 +234,7 @@ spam-email-classifier/
 - Probability distributions
 - Model confidence scores
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -242,18 +242,18 @@ spam-email-classifier/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **Scikit-learn** team for excellent ML library
 - **Streamlit** team for the amazing web framework
 - **NLTK** contributors for natural language processing tools
 - The open-source community for inspiration and resources
 
-## 📧 Contact
+##  Contact
 
 - **GitHub**: [Your GitHub Profile]
 - **LinkedIn**: [Your LinkedIn Profile]
