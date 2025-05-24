@@ -1,11 +1,11 @@
 import streamlit as st
-import requests
-import json
+import joblib
+import os # Import os module to check for file existence
 
 # Set the page configuration for a wider layout and a title
 st.set_page_config(layout="centered", page_title="Email Spam Classifier")
 
-# --- UI Elements ---
+# --- UI Elements (CSS for styling) ---
 st.markdown(
     """
     <style>
@@ -68,11 +68,6 @@ st.markdown(
         color: #16a34a; /* green-700 */
         border: 1px solid #86efac; /* green-300 */
     }
-    .unknown-result {
-        background-color: #fffbeb; /* yellow-100 */
-        color: #b45309; /* yellow-700 */
-        border: 1px solid #fcd34d; /* yellow-300 */
-    }
     .error-box {
         padding: 1rem; /* p-4 */
         background-color: #fee2e2; /* red-100 */
@@ -106,63 +101,71 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Text area for user input
+# --- Model Loading ---
+# Define paths to the pre-trained model and vectorizer
+# Assuming they are in an 'app/' subdirectory as per your GitHub structure
+MODEL_PATH = 'app/spam_classifier.pkl'
+VECTORIZER_PATH = 'app/vectorizer.pkl'
+
+# Use Streamlit's caching to load the model and vectorizer only once
+@st.cache_resource
+def load_assets():
+    try:
+        # Check if files exist before loading
+        if not os.path.exists(MODEL_PATH):
+            st.error(f"Error: Model file not found at {MODEL_PATH}. Please ensure it's in the correct directory.")
+            return None, None
+        if not os.path.exists(VECTORIZER_PATH):
+            st.error(f"Error: Vectorizer file not found at {VECTORIZER_PATH}. Please ensure it's in the correct directory.")
+            return None, None
+
+        model = joblib.load(MODEL_PATH)
+        vectorizer = joblib.load(VECTORIZER_PATH)
+        st.success("Model and vectorizer loaded successfully!")
+        return model, vectorizer
+    except Exception as e:
+        st.error(f"Error loading model or vectorizer: {e}")
+        return None, None
+
+classifier_model, text_vectorizer = load_assets()
+
+# Check if assets were loaded successfully before proceeding
+if classifier_model is None or text_vectorizer is None:
+    st.stop() # Stop the app if assets couldn't be loaded
+
+# --- User Input ---
 email_content = st.text_area(
     "Enter your email content here...",
     height=200,
     placeholder="e.g., 'URGENT! You've won $1,000,000! Click here NOW to claim your prize!'"
 )
 
-# Button to trigger classification
+# --- Classification Logic ---
 if st.button("Classify Email", disabled=not email_content.strip()):
-    # Display a spinner while loading
     with st.spinner("Classifying..."):
-        # Construct the prompt for the LLM
-        prompt = f"Classify the following email content as either 'ham' or 'spam'. Respond with only 'ham' or 'spam'.\n\nEmail: \"{email_content}\""
-
         try:
-            # Prepare the payload for the Gemini API request
-            chat_history = [{"role": "user", "parts": [{"text": prompt}]}]
-            payload = {"contents": chat_history}
+            # 1. Preprocess the input text using the loaded vectorizer
+            # The vectorizer expects an iterable (e.g., a list) of strings
+            vectorized_text = text_vectorizer.transform([email_content])
 
-            # Define the API key (empty string for Canvas environment) and API URL
-            # In a real Streamlit app, you'd load this from st.secrets or environment variables
-            api_key = "" # Canvas will provide this at runtime
-            api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+            # 2. Make a prediction using the loaded classifier model
+            prediction = classifier_model.predict(vectorized_text)[0]
 
-            # Make the API call to Gemini
-            response = requests.post(api_url, headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
+            # 3. Map the numerical prediction to 'ham' or 'spam'
+            # Assuming 0 for ham and 1 for spam, adjust if your model uses different labels
+            if prediction == 1: # Assuming 1 is for spam
+                st.markdown(f"<div class='result-box spam-result'><p><span style='font-weight: bold;'>Result:</span> Spam</p></div>", unsafe_allow_html=True)
+            else: # Assuming 0 is for ham
+                st.markdown(f"<div class='result-box ham-result'><p><span style='font-weight: bold;'>Result:</span> Ham</p></div>", unsafe_allow_html=True)
 
-            # Check if the API response was successful
-            response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
-
-            result = response.json()
-
-            # Process the LLM's response
-            if result.get("candidates") and len(result["candidates"]) > 0 and \
-               result["candidates"][0].get("content") and result["candidates"][0]["content"].get("parts") and \
-               len(result["candidates"][0]["content"]["parts"]) > 0:
-                text = result["candidates"][0]["content"]["parts"][0]["text"]
-                # Normalize the response to 'ham' or 'spam'
-                if "spam" in text.lower():
-                    st.markdown(f"<div class='result-box spam-result'><p><span style='font-weight: bold;'>Result:</span> Spam</p></div>", unsafe_allow_html=True)
-                elif "ham" in text.lower():
-                    st.markdown(f"<div class='result-box ham-result'><p><span style='font-weight: bold;'>Result:</span> Ham</p></div>", unsafe_allow_html=True)
-                else:
-                    st.markdown(f"<div class='result-box unknown-result'><p>Unable to classify. Please try again or refine your input.</p></div>", unsafe_allow_html=True)
-            else:
-                st.markdown(f"<div class='error-box'><p>No valid classification found in the response.</p></div>", unsafe_allow_html=True)
-
-        except requests.exceptions.HTTPError as http_err:
-            st.markdown(f"<div class='error-box'><p>API Error: {http_err}</p><p>Details: {response.text}</p></div>", unsafe_allow_html=True)
         except Exception as e:
-            st.markdown(f"<div class='error-box'><p>An unexpected error occurred: {e}</p></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='error-box'><p>An error occurred during classification: {e}</p></div>", unsafe_allow_html=True)
 
-# Footer text
+# --- Footer ---
 st.markdown(
     """
     <p class='footer-text'>
-        Powered by Gemini 2.0 Flash
+        Using a pre-trained machine learning model.
     </p>
     """,
     unsafe_allow_html=True
